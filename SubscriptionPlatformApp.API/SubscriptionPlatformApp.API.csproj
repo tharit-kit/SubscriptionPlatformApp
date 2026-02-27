@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SubscriptionPlatformApp.Application\SubscriptionPlatformApp.Application.csproj" />
+    <ProjectReference Include="..\SubscriptionPlatformApp.Domain\SubscriptionPlatformApp.Domain.csproj" />
+    <ProjectReference Include="..\SubscriptionPlatformApp.Infrastructure\SubscriptionPlatformApp.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SubscriptionPlatformApp.Application\SubscriptionPlatformApp.Application.csproj" />
+    <ProjectReference Include="..\SubscriptionPlatformApp.Domain\SubscriptionPlatformApp.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
