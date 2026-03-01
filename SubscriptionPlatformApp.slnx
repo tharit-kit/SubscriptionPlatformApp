@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Dockerfile" />
+  </Folder>
   <Project Path="SubscriptionPlatformApp.API/SubscriptionPlatformApp.API.csproj" />
   <Project Path="SubscriptionPlatformApp.Application/SubscriptionPlatformApp.Application.csproj" />
   <Project Path="SubscriptionPlatformApp.Domain/SubscriptionPlatformApp.Domain.csproj" />
