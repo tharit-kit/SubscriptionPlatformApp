@@ -20,8 +20,9 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public required string TenantName { get; set; }
 
         [Required]
-        [Column("BusinessTypeId")]
-        public Guid BusinessTypeId { get; set; }
+        [MaxLength(64)]
+        [Column("BusinessType")]
+        public required string BusinessType { get; set; }
 
         [Required]
         [MaxLength(128)]
@@ -30,7 +31,7 @@ namespace SubscriptionPlatformApp.Domain.Entities
 
         [Required]
         [Column("TenantAddressId")]
-        public Guid TenantAddressId { get; set; }
+        public required Guid TenantAddressId { get; set; }
 
         [Column("BillingAddressId")]
         public Guid BillingAddressId { get; set; }
@@ -40,6 +41,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("Subdomain")]
         public required string Subdomain { get; set; }
 
+        public Addresses TenantAddress { get; set; } = null!;
+        public Addresses BillingAddress { get; set; } = null!;
         public ICollection<Users> Users { get; set; } = new List<Users>();
         public ICollection<Subscriptions> Subscriptions { get; set; } = new List<Subscriptions>();
         public ICollection<Payments> Payments { get; set; } = new List<Payments>();

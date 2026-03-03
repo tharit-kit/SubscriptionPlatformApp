@@ -19,10 +19,12 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public Guid TenantId { get; set; }
 
         [Required]
+        [MaxLength(64)]
         [Column("SubscriptionType")]
         public required string SubscriptionType { get; set; }
 
         [Required]
+        [MaxLength(64)]
         [Column("SubscriptionStatus")]
         public required string SubscriptionStatus { get; set; }
 

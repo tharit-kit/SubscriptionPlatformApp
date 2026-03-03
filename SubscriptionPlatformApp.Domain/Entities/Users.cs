@@ -15,18 +15,19 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public Guid UserId { get; set; }
 
         [Required]
+        [MaxLength(128)]
         [Column("Email")]
         public required string Email { get; set; }
 
+        [MaxLength(128)]
         [Column("HashedPassword")]
         public string? HashedPassword { get; set; }
 
+        [MaxLength(128)]
         [Column("GeneratedSalt")]
         public string? GeneratedSalt { get; set; }
 
-        [Column("TenantId")]
-        public Guid TenantId { get; set; }
-
+        [MaxLength(64)]
         [Column("UserStatus")]
         public string? UserStatus { get; set; }
 
@@ -34,7 +35,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public DateTime? LastLoginAt { get; set; }
 
         public ICollection<Memberships> Memberships { get; set; } = new List<Memberships>();
-        public ICollection<MemberInvitation> InvitationsSent { get; set; } = new List<MemberInvitation>();
+        public ICollection<MemberInvitations> InvitationsSent { get; set; } = new List<MemberInvitations>();
+        public ICollection<MemberInvitations> InvitationsReceived { get; set; } = new List<MemberInvitations>();
         public ICollection<EmailVerificationTokens> EmailVerificationTokens { get; set; } = new List<EmailVerificationTokens>();
     }
 }

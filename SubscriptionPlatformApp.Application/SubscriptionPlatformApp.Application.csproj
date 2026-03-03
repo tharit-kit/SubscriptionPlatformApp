@@ -10,4 +10,10 @@
     <ProjectReference Include="..\SubscriptionPlatformApp.Domain\SubscriptionPlatformApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+    <Folder Include="Abstractions\Persistence\" />
+    <Folder Include="Abstractions\Repositories\" />
+  </ItemGroup>
+
 </Project>

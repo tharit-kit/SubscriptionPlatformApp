@@ -28,9 +28,12 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("PaymentDate")]
         public DateTime? PaymentDate { get; set; }
 
-        public PaymentStatus PaymentStatus { get; set; }
+        [Required]
+        [MaxLength(64)]
+        [Column("PaymentStatus")]
+        public required string PaymentStatus { get; set; }
 
         public Tenants Tenant { get; set; } = null!; 
-        public Subscription Subscription { get; set; } = null!;
+        public Subscriptions Subscription { get; set; } = null!;
     }
 }
