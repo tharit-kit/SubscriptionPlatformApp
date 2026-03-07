@@ -34,6 +34,56 @@ public class DataContext : DbContext
             .HasForeignKey(a => a.BillingAddressId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        
+        modelBuilder.Entity<Memberships>(e =>
+        {
+            e.HasKey(x => new { x.TenantId, x.UserId });
+
+            e.HasOne(x => x.Tenant)
+                .WithMany(b => b.Memberships)
+                .HasForeignKey(x => x.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(x => x.User)
+                .WithMany(u => u.Memberships)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasIndex(x => new { x.UserId, x.TenantId }).IsUnique();
+        });
+
+        modelBuilder.Entity<MemberInvitations>(e =>
+        {
+            e.HasKey(x => x.MemberInvitationId);
+
+            e.HasOne(x => x.Tenant)
+                .WithMany(b => b.MemberInvitations)
+                .HasForeignKey(x => x.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(x => x.InvitedByUser)
+                .WithMany(u => u.InvitationsSent)
+                .HasForeignKey(x => x.InvitedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(x => x.InvitedUser)
+                .WithMany(u => u.InvitationsReceived)
+                .HasForeignKey(x => x.InvitedUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // common indexes
+            e.HasIndex(x => new { x.TenantId, x.InvitedEmail });
+            e.HasIndex(x => x.InvitedEmail);
+            e.HasIndex(x => x.HashedToken).IsUnique();
+        });
+
+        modelBuilder.Entity<Subscriptions>()
+            .HasOne(s => s.Tenant)
+            .WithMany(b => b.Subscriptions)
+            .HasForeignKey(s => s.TenantId);
+
+        modelBuilder.Entity<Payments>()
+            .HasOne(p => p.Tenant)
+            .WithMany(b => b.Payments)
+            .HasForeignKey(p => p.TenantId);
     }
 }

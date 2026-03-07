@@ -15,8 +15,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public Guid MembershipId { get; set; }
 
         [Required]
-        [Column("BusinessId")]
-        public Guid BusinessId { get; set; }
+        [Column("TenantId")]
+        public Guid TenantId { get; set; }
 
         [Required]
         [Column("UserId")]

@@ -43,8 +43,9 @@ namespace SubscriptionPlatformApp.Domain.Entities
 
         public Addresses TenantAddress { get; set; } = null!;
         public Addresses BillingAddress { get; set; } = null!;
-        public ICollection<Users> Users { get; set; } = new List<Users>();
+        public ICollection<Memberships> Memberships { get; set; } = new List<Memberships>();
         public ICollection<Subscriptions> Subscriptions { get; set; } = new List<Subscriptions>();
         public ICollection<Payments> Payments { get; set; } = new List<Payments>();
+        public ICollection<MemberInvitations> MemberInvitations { get; set; } = new List<MemberInvitations>();
     }
 }
