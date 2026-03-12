@@ -2,7 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionPlatformApp.Domain.Entities;
 
-namespace SubscriptionPlatformApp.Infrastructure.Persistence;
+namespace SubscriptionPlatformApp.Infrastructure.AppDbContext;
 
 public class DataContext : DbContext
 {

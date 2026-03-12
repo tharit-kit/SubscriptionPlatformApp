@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
-using SubscriptionPlatformApp.Infrastructure.Persistence;
+using SubscriptionPlatformApp.Infrastructure.AppDbContext;
 
 namespace SubscriptionPlatformApp.Infrastructure.Repositories.Shared;
 

@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\Persistence\" />
-    <Folder Include="Abstractions\Repositories\" />
   </ItemGroup>
 
 </Project>
