@@ -2,11 +2,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionPlatformApp.Domain.Entities;
 
-namespace SubscriptionPlatformApp.Infrastructure.AppDbContext;
+namespace SubscriptionPlatformApp.Infrastructure.Persistence;
 
-public class DataContext : DbContext
+public class AppDbContext : DbContext
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options) {}
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     public DbSet<Users> Users => Set<Users>();
     public DbSet<Tenants> Tenants => Set<Tenants>();
