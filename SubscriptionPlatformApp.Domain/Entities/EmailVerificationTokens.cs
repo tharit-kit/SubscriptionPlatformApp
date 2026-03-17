@@ -15,9 +15,11 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public Guid EmailVerificationTokenId { get; set; }
 
         [Required]
+        [Column("UserId")]
         public Guid UserId { get; set; }
         
         [Required]
+        [Column("ExpiredAt")]
         public DateTime ExpireAt { get; set; }
 
         public Users User { get; set; } = null!;

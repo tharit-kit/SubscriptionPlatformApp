@@ -38,8 +38,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
 
         [Required]
         [MaxLength(128)]
-        [Column("Subdomain")]
-        public required string Subdomain { get; set; }
+        [Column("Slug")]
+        public required string Slug { get; set; }
 
         public Addresses TenantAddress { get; set; } = null!;
         public Addresses BillingAddress { get; set; } = null!;

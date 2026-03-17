@@ -1,15 +1,16 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
+using SubscriptionPlatformApp.Infrastructure.Persistence;
 
 namespace SubscriptionPlatformApp.Infrastructure.Repositories.Shared;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-    private readonly Persistence.AppDbContext _context;
-    private readonly DbSet<T> _set;
+    protected readonly AppDbContext _context;
+    protected DbSet<T> _set;
     public GenericRepository(
-        Persistence.AppDbContext context
+        AppDbContext context
     )
     {
         _context = context;

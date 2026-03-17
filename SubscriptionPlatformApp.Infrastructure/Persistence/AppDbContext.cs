@@ -1,12 +1,18 @@
-using System;
 using Microsoft.EntityFrameworkCore;
+using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Domain.Entities;
+using System;
 
 namespace SubscriptionPlatformApp.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+    private readonly ITenantContextAccessor _tenantContextAccessor;
+    public AppDbContext(DbContextOptions<AppDbContext> options, 
+        ITenantContextAccessor tenantContextAccessor) : base(options) 
+    {
+        _tenantContextAccessor = tenantContextAccessor;
+    }
 
     public DbSet<Users> Users => Set<Users>();
     public DbSet<Tenants> Tenants => Set<Tenants>();
@@ -85,5 +91,27 @@ public class AppDbContext : DbContext
             .HasOne(p => p.Tenant)
             .WithMany(b => b.Payments)
             .HasForeignKey(p => p.TenantId);
+
+        // Optional Settings
+
+        modelBuilder.Entity<Subscriptions>()
+            .HasQueryFilter(x =>
+                _tenantContextAccessor.Current != null &&
+                x.TenantId == _tenantContextAccessor.Current.TenantId);
+
+        modelBuilder.Entity<Payments>()
+            .HasQueryFilter(x =>
+                _tenantContextAccessor.Current != null &&
+                x.TenantId == _tenantContextAccessor.Current.TenantId);
+
+        modelBuilder.Entity<Memberships>()
+            .HasQueryFilter(x =>
+                _tenantContextAccessor.Current != null &&
+                x.TenantId == _tenantContextAccessor.Current.TenantId);
+
+        modelBuilder.Entity<MemberInvitations>()
+            .HasQueryFilter(x =>
+                _tenantContextAccessor.Current != null &&
+                x.TenantId == _tenantContextAccessor.Current.TenantId);
     }
 }

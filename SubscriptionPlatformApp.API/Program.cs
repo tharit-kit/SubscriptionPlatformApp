@@ -1,3 +1,4 @@
+using SubscriptionPlatformApp.API.Middlewares;
 using SubscriptionPlatformApp.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,28 @@ builder.Services
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin =>
+            {
+                if (string.IsNullOrWhiteSpace(origin)) return false;
+
+                var uri = new Uri(origin);
+                var host = uri.Host.ToLowerInvariant();
+
+                return host == "subscriptionplatform.com"
+                    || host.EndsWith(".vercel.app");
+            })
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -19,6 +42,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("Frontend");
+
+app.UseMiddleware<TenantResolutionMiddleware>();
 
 app.UseAuthorization();
 
