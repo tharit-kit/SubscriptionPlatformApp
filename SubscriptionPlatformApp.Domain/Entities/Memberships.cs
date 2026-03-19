@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 
 namespace SubscriptionPlatformApp.Domain.Entities
 {
@@ -26,9 +27,9 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("Role")]
         public string? Role { get; set; }
 
-        [MaxLength(64)]
+        [Required]
         [Column("MemberStatus")]
-        public string? MemberStatus { get; set; }
+        public required MemberStatus MemberStatus { get; set; }
 
         [Column("JoinedAt")]
         public DateTime? JoinedAt { get; set; }

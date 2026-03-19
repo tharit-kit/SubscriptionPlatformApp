@@ -1,4 +1,5 @@
 ﻿using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,6 +40,6 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public string Zipcode { get; set; } = null!;
 
         [Column("AddressType")]
-        public string AddressType { get; set; } = null!;
+        public AddressType AddressType { get; set; }
     }
 }

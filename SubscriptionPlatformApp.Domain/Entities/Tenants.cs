@@ -1,4 +1,5 @@
 ﻿using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,9 +26,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public required string BusinessType { get; set; }
 
         [Required]
-        [MaxLength(128)]
         [Column("TenantStatus")]
-        public required string TenantStatus { get; set; }
+        public required TenantStatus TenantStatus { get; set; }
 
         [Required]
         [Column("TenantAddressId")]

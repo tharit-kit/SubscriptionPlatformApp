@@ -1,7 +1,10 @@
 ﻿using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.DTOs.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.TenantRegistrationUseCase;
+using SubscriptionPlatformApp.Application.Helpers;
+using SubscriptionPlatformApp.Application.Utils.Constants;
 using SubscriptionPlatformApp.Domain.Entities;
+using SubscriptionPlatformApp.Domain.Enums;
 
 namespace SubscriptionPlatformApp.Application.UseCases
 {
@@ -19,13 +22,14 @@ namespace SubscriptionPlatformApp.Application.UseCases
             var tenantId = Guid.NewGuid();
             var addressId = Guid.NewGuid();
             var newAdminId = Guid.NewGuid();
+            var now = DateTime.UtcNow;
 
             var newTenant = new Tenants
             {
                 TenantId = tenantId,
                 TenantName = request.TenantInfo.TenantName,
                 BusinessType = request.TenantInfo.BusinessType,
-                TenantStatus = "",
+                TenantStatus = TenantStatus.Pending,
                 TenantAddressId = addressId,
                 Slug = request.TenantInfo.Subdomain
             };
@@ -39,16 +43,19 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 SubDistrict = request.TenantAddress.SubDistrict,
                 Province = request.TenantAddress.Province,
                 Zipcode = request.TenantAddress.Zipcode,
-                AddressType = ""
+                AddressType = AddressType.Workplace
             };
+
+            var generatedSalt = PasswordHasher.GenerateSalt();
+            var hashedPassword = PasswordHasher.GenerateHash(request.NewAdmin.ConfirmPassword, generatedSalt);
 
             var newAdmin = new Users
             {
                 UserId = newAdminId,
                 Email = request.NewAdmin.Email,
-                HashedPassword = "",
-                GeneratedSalt = "",
-                UserStatus = ""
+                HashedPassword = hashedPassword,
+                GeneratedSalt = generatedSalt,
+                UserStatus = UserStatus.Pending
             };
 
             var newMembership = new Memberships
@@ -56,16 +63,16 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 MembershipId = Guid.NewGuid(),
                 TenantId = tenantId,
                 UserId = newAdminId,
-                Role = "Admin",
-                MemberStatus = "",
-                JoinedAt = DateTime.UtcNow,
+                Role = RoleConstants.ADMIN_ROLE,
+                MemberStatus = MemberStatus.Pending,
+                JoinedAt = now,
             };
 
             var emailVerification = new EmailVerificationTokens
             {
                 EmailVerificationTokenId = Guid.NewGuid(),
                 UserId = newAdminId,
-                ExpireAt = DateTime.UtcNow.AddMinutes(15),
+                ExpireAt = now.AddMinutes(15),
             };
         }
     }

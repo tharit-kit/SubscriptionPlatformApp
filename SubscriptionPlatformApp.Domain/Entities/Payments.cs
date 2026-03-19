@@ -1,4 +1,5 @@
 ﻿using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,9 +30,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public DateTime? PaymentDate { get; set; }
 
         [Required]
-        [MaxLength(64)]
         [Column("PaymentStatus")]
-        public required string PaymentStatus { get; set; }
+        public required PaymentStatus PaymentStatus { get; set; }
 
         public Tenants Tenant { get; set; } = null!; 
         public Subscriptions Subscription { get; set; } = null!;

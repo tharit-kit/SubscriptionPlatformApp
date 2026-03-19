@@ -1,4 +1,5 @@
 ﻿using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,9 +28,9 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("GeneratedSalt")]
         public string? GeneratedSalt { get; set; }
 
-        [MaxLength(64)]
+        [Required]
         [Column("UserStatus")]
-        public string? UserStatus { get; set; }
+        public required UserStatus UserStatus { get; set; }
 
         [Column("LastLoginAt")]
         public DateTime? LastLoginAt { get; set; }
