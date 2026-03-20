@@ -74,6 +74,10 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 UserId = newAdminId,
                 ExpireAt = now.AddMinutes(15),
             };
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
+
         }
     }
 }
