@@ -20,6 +20,11 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("Email")]
         public required string Email { get; set; }
 
+        [Required]
+        [MaxLength(1024)]
+        [Column("FullName")]
+        public required string FullName { get; set; }
+
         [MaxLength(128)]
         [Column("HashedPassword")]
         public string? HashedPassword { get; set; }

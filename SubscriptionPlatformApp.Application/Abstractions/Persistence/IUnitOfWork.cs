@@ -9,7 +9,7 @@ public interface IUnitOfWork : IDisposable
     IAddressRepository Address { get; }
     IEmailVerificationTokenRepository EmailVerificationToken { get; }
     IMemberInvitationRepository MemberInvitation { get; }
-    IMembershipRepository MemberMembership { get; }
+    IMembershipRepository Membership { get; }
     ISubscriptionRepository Subscription { get; }
     IPaymentRepository Payment { get; }
     ITenantRepository Tenant { get; }

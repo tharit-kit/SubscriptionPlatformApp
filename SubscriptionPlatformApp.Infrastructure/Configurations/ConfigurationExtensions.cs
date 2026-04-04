@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
+using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.Helpers.AppSettings;
+using SubscriptionPlatformApp.Application.UseCases;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
+using SubscriptionPlatformApp.Infrastructure.Providers;
 using SubscriptionPlatformApp.Infrastructure.Repositories;
 
 namespace SubscriptionPlatformApp.Infrastructure.Configurations
@@ -19,12 +23,8 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
                 options.UseSqlServer(connectionString));
 
             services
-                .AddAndValidate<SmtpSetting>(config);
-
-            //services.Configure<PositionOptions>(
-            //    config.GetSection(PositionOptions.Position));
-            //services.Configure<ColorOptions>(
-            //    config.GetSection(ColorOptions.Color));
+                .AddAndValidate<SmtpSetting>(config)
+                .AddAndValidate<FrontendSetting>(config);
 
             return services;
         }
@@ -32,7 +32,7 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
         public static IServiceCollection AddApplication(
             this IServiceCollection services)
         {
-            // Add Services for Repo
+            // Add Services for Repositories
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
@@ -41,6 +41,13 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             services.AddScoped<IMembershipRepository, MembershipRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
+            // Add Services for usecases
+            services.AddScoped<ITenantRegistrationUseCase, TenantRegistrationUseCase>();
+
+            // Add Services for providers
+            services.AddScoped<IEmailBaseProvider, EmailBaseProvider>();
+            services.AddScoped<ISmtpProvider, SmtpProvider>();
 
             return services;
         }

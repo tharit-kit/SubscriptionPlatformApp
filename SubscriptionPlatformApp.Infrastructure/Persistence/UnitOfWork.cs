@@ -18,7 +18,7 @@ public class UnitOfWork : IUnitOfWork
         Address = new AddressRepository(_context);
         EmailVerificationToken = new EmailVerificationTokenRepository(_context);
         MemberInvitation = new MemberInvitationRepository(_context);
-        MemberMembership = new MembershipRepository(_context);
+        Membership = new MembershipRepository(_context);
         Subscription = new SubscriptionRepository(_context);
         Payment = new PaymentRepository(_context);
         Tenant = new TenantRepository(_context);
@@ -28,7 +28,7 @@ public class UnitOfWork : IUnitOfWork
     public IAddressRepository Address { get; }
     public IEmailVerificationTokenRepository EmailVerificationToken { get; }
     public IMemberInvitationRepository MemberInvitation { get; }
-    public IMembershipRepository MemberMembership { get; }
+    public IMembershipRepository Membership { get; }
     public ISubscriptionRepository Subscription { get; }
     public IPaymentRepository Payment { get; }
     public ITenantRepository Tenant { get; }

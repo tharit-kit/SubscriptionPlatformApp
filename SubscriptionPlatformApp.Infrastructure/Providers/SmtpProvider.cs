@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.DTOs.Providers.SmtpProvider;
 using SubscriptionPlatformApp.Application.Helpers.AppSettings;
-using System;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -14,21 +11,21 @@ namespace SubscriptionPlatformApp.Infrastructure.Providers
     public class SmtpProvider : ISmtpProvider
     {
         private readonly HttpClient _httpClient;
-        private readonly SmtpSetting _emailSettings;
+        private readonly SmtpSetting _smtpSettings;
 
         public SmtpProvider(
             HttpClient httpClient,
-            IOptions<SmtpSetting> emailSettings)
+            IOptions<SmtpSetting> smtpSettings)
         {
             _httpClient = httpClient;
-            _emailSettings = emailSettings.Value;
+            _smtpSettings = smtpSettings.Value;
         }
 
         public async Task<bool> SendingEmailAsync(SendingEmailRequest message)
         {
-            _httpClient.BaseAddress = new Uri(_emailSettings.BaseUrl);
+            _httpClient.BaseAddress = new Uri(_smtpSettings.BaseUrl);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("api-key", _emailSettings.ApiKey);
+            _httpClient.DefaultRequestHeaders.Add("api-key", _smtpSettings.ApiKey);
 
             var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
             {

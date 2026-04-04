@@ -6,5 +6,7 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.TenantRegistrationUs
 {
     public class TenantRegistrationResponse
     {
+        public Guid TenantId { get; set; }
+        public Guid AdminId { get; set; }
     }
 }
