@@ -4,6 +4,7 @@
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path="Dockerfile" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="SubscriptionPlatformApp.API/SubscriptionPlatformApp.API.csproj" />
   <Project Path="SubscriptionPlatformApp.Application/SubscriptionPlatformApp.Application.csproj" />

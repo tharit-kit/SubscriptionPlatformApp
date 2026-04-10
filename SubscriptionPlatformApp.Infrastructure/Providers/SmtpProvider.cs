@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.DTOs.Providers.SmtpProvider;
+using SubscriptionPlatformApp.Application.Helpers;
 using SubscriptionPlatformApp.Application.Helpers.AppSettings;
 using System.Net.Http.Headers;
 using System.Text;
@@ -23,9 +24,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Providers
 
         public async Task<bool> SendingEmailAsync(SendingEmailRequest message)
         {
+            var apiKey = await AzureVaultService.VaultSecretReader("BrevoApiKey");
             _httpClient.BaseAddress = new Uri(_smtpSettings.BaseUrl);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("api-key", _smtpSettings.ApiKey);
+            _httpClient.DefaultRequestHeaders.Add("api-key", apiKey.Value);
 
             var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
             {

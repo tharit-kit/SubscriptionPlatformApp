@@ -87,10 +87,26 @@ public class AppDbContext : DbContext
             .WithMany(b => b.Subscriptions)
             .HasForeignKey(s => s.TenantId);
 
-        modelBuilder.Entity<Payments>()
-            .HasOne(p => p.Tenant)
-            .WithMany(b => b.Payments)
-            .HasForeignKey(p => p.TenantId);
+        modelBuilder.Entity<Payments>(e =>
+        {
+            e.HasKey(x => x.PaymentId);
+
+            e.HasOne(p => p.Tenant)
+                .WithMany(b => b.Payments)
+                .HasForeignKey(p => p.TenantId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            e.HasOne(p => p.Subscription)
+                .WithMany(p => p.Payments)
+                .HasForeignKey(p => p.SubscriptionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            e.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
 
         // Optional Settings
 

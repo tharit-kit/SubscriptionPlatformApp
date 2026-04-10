@@ -16,7 +16,7 @@ namespace SubscriptionPlatformApp.API.Controllers
             _tenantRegistrationUseCase = tenantRegistrationUseCase;
         }
 
-        [HttpPost("tenant-registration")]
+        [HttpPost("register")]
         public async Task<IActionResult> TenantRegistration([FromBody] TenantRegistrationRequest request, CancellationToken ct)
         {
             if (request == null)

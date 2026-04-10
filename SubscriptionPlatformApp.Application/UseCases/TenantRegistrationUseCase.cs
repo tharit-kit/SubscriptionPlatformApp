@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
@@ -21,11 +22,11 @@ namespace SubscriptionPlatformApp.Application.UseCases
         private readonly FrontendSetting _frontendSetting;
         private readonly ILogger<TenantRegistrationUseCase> _logger;
 
-        public TenantRegistrationUseCase(IUnitOfWork unitOfWork, IEmailBaseProvider emailBaseProvider, FrontendSetting frontendSetting, ILogger<TenantRegistrationUseCase> logger)
+        public TenantRegistrationUseCase(IUnitOfWork unitOfWork, IEmailBaseProvider emailBaseProvider, IOptions<FrontendSetting> frontendSetting, ILogger<TenantRegistrationUseCase> logger)
         {
             _unitOfWork = unitOfWork;
             _emailBaseProvider = emailBaseProvider;
-            _frontendSetting = frontendSetting;
+            _frontendSetting = frontendSetting.Value;
             _logger = logger;
         }
 

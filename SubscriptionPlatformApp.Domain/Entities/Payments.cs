@@ -18,7 +18,10 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Required]
         [Column("TenantId")]
         public Guid TenantId { get; set; }
-        
+
+        [Column("UserId")]
+        public Guid? UserId { get; set; }
+
         [Required]
         [Column("SubscriptionId")]
         public Guid SubscriptionId { get; set; }
@@ -35,5 +38,6 @@ namespace SubscriptionPlatformApp.Domain.Entities
 
         public Tenants Tenant { get; set; } = null!; 
         public Subscriptions Subscription { get; set; } = null!;
+        public Users? User { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
@@ -48,6 +49,9 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             // Add Services for providers
             services.AddScoped<IEmailBaseProvider, EmailBaseProvider>();
             services.AddScoped<ISmtpProvider, SmtpProvider>();
+
+            services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
