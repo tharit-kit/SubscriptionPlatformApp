@@ -43,6 +43,5 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public ICollection<Memberships> Memberships { get; set; } = new List<Memberships>();
         public ICollection<MemberInvitations> InvitationsSent { get; set; } = new List<MemberInvitations>();
         public ICollection<MemberInvitations> InvitationsReceived { get; set; } = new List<MemberInvitations>();
-        public ICollection<EmailVerificationTokens> EmailVerificationTokens { get; set; } = new List<EmailVerificationTokens>();
     }
 }

@@ -93,6 +93,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 {
                     EmailVerificationTokenId = verificationTokenId,
                     UserId = newAdminId,
+                    TenantId= newTenantId,
                     ExpireAt = now.AddMinutes(15),
                 };
                 await _unitOfWork.EmailVerificationToken.AddAsync(emailVerification, ct);

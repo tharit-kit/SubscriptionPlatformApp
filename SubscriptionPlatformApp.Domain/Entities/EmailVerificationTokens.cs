@@ -17,11 +17,16 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Required]
         [Column("UserId")]
         public Guid UserId { get; set; }
-        
+
+        [Required]
+        [Column("TenantId")]
+        public Guid TenantId { get; set; }
+
         [Required]
         [Column("ExpiredAt")]
         public DateTime ExpireAt { get; set; }
 
         public Users User { get; set; } = null!;
+        public Tenants Tenant { get; set; } = null!;
     }
 }

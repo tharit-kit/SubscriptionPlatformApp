@@ -42,7 +42,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Memberships>(e =>
         {
-            e.HasKey(x => new { x.TenantId, x.UserId });
+            e.HasKey(x => x.MembershipId);
 
             e.HasOne(x => x.Tenant)
                 .WithMany(b => b.Memberships)
@@ -107,9 +107,23 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
+        modelBuilder.Entity<EmailVerificationTokens>(e =>
+        {
+            e.HasKey(x => x.EmailVerificationTokenId);
+
+            e.HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            e.HasOne(x => x.Tenant)
+                .WithMany()
+                .HasForeignKey(x => x.TenantId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
 
         // Optional Settings
-
         modelBuilder.Entity<Subscriptions>()
             .HasQueryFilter(x =>
                 _tenantContextAccessor.Current != null &&

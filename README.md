@@ -27,3 +27,7 @@ dotnet ef migrations add InitialCreate `
 dotnet ef database update `
   --project SubscriptionPlatformApp.Infrastructure `
   --startup-project SubscriptionPlatformApp.API
+
+dotnet ef migrations remove `
+  --project SubscriptionPlatformApp.Infrastructure `
+  --startup-project SubscriptionPlatformApp.API

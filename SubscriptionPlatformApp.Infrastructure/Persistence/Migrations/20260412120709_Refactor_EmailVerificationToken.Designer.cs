@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SubscriptionPlatformApp.Infrastructure.Persistence;
 namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260412120709_Refactor_EmailVerificationToken")]
+    partial class Refactor_EmailVerificationToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,6 +110,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("ExpireAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("ExpiredAt");
+
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsEmailVerified");
 
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier")

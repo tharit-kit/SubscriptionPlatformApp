@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SubscriptionPlatformApp.Infrastructure.Persistence;
 namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260412103256_Add_IsEmailVerified")]
+    partial class Add_IsEmailVerified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,9 +111,9 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("ExpiredAt");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("TenantId");
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsEmailVerified");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -125,8 +128,6 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
                         .HasColumnName("UserId");
 
                     b.HasKey("EmailVerificationTokenId");
-
-                    b.HasIndex("TenantId");
 
                     b.HasIndex("UserId");
 
@@ -218,10 +219,13 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SubscriptionPlatformApp.Domain.Entities.Memberships", b =>
                 {
-                    b.Property<Guid>("MembershipId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("MembershipId");
+                        .HasColumnName("TenantId");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -239,14 +243,14 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("MemberStatus");
 
+                    b.Property<Guid>("MembershipId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("MembershipId");
+
                     b.Property<string>("Role")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)")
                         .HasColumnName("Role");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("TenantId");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -256,13 +260,7 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("UpdatedBy");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("UserId");
-
-                    b.HasKey("MembershipId");
-
-                    b.HasIndex("TenantId");
+                    b.HasKey("TenantId", "UserId");
 
                     b.HasIndex("UserId", "TenantId")
                         .IsUnique();
@@ -502,19 +500,11 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SubscriptionPlatformApp.Domain.Entities.EmailVerificationTokens", b =>
                 {
-                    b.HasOne("SubscriptionPlatformApp.Domain.Entities.Tenants", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("SubscriptionPlatformApp.Domain.Entities.Users", "User")
-                        .WithMany()
+                        .WithMany("EmailVerificationTokens")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Tenant");
 
                     b.Navigation("User");
                 });
@@ -638,6 +628,8 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SubscriptionPlatformApp.Domain.Entities.Users", b =>
                 {
+                    b.Navigation("EmailVerificationTokens");
+
                     b.Navigation("InvitationsReceived");
 
                     b.Navigation("InvitationsSent");

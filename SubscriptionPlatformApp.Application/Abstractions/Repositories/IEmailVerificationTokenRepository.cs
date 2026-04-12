@@ -8,5 +8,6 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Repositories
 {
     public interface IEmailVerificationTokenRepository : IRepositoryBase<EmailVerificationTokens>
     {
+        Task<EmailVerificationTokens?> FindByIdAsync(Guid id, CancellationToken ct);
     }
 }
