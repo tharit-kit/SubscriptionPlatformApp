@@ -4,9 +4,6 @@ using SubscriptionPlatformApp.Application.DTOs.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.UserVerificationUseCase;
 using SubscriptionPlatformApp.Application.Utils.Response;
 using SubscriptionPlatformApp.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SubscriptionPlatformApp.Application.UseCases
 {
@@ -14,8 +11,8 @@ namespace SubscriptionPlatformApp.Application.UseCases
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public EmailVerificationUseCase(IUnitOfWork unitOfWork) 
-        { 
+        public EmailVerificationUseCase(IUnitOfWork unitOfWork)
+        {
             _unitOfWork = unitOfWork;
         }
 
@@ -30,13 +27,13 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.VerificationTokenNotFound);
                 }
 
-                if(token.ExpireAt < DateTime.UtcNow)
+                if (token.ExpireAt < DateTime.UtcNow)
                 {
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.VerificationTokenExpired);
                 }
 
                 var user = token.User;
-                if(user == null)
+                if (user == null)
                 {
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserNotFound);
                 }
@@ -57,7 +54,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     _unitOfWork.Membership.Update(membership);
                     await _unitOfWork.SaveChangesAsync(ct);
                 }
-                else if(user.UserStatus == UserStatus.Active)
+                else if (user.UserStatus == UserStatus.Active)
                 {
                     // email already verified
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.EmailAlreadyVerified);
@@ -68,7 +65,12 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserRejected);
                 }
 
-                return ApiResponse.Success(new EmailVerificationResponse());
+                var data = new EmailVerificationResponse()
+                {
+                    UserId = token.UserId,
+                    TenantId = token.TenantId,
+                };
+                return ApiResponse.Success<EmailVerificationResponse>(data);
             }
             catch (Exception ex)
             {

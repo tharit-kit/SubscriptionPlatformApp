@@ -46,9 +46,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             // Add Services for usecases
             services.AddScoped<ITenantRegistrationUseCase, TenantRegistrationUseCase>();
             services.AddScoped<IEmailVerificationUseCase, EmailVerificationUseCase>();
+            services.AddScoped<IResendVerificationEmailUseCase, ResendVerificationEmailUseCase>();
 
             // Add Services for providers
-            services.AddScoped<IEmailBaseProvider, EmailBaseProvider>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISmtpProvider, SmtpProvider>();
 
             services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();

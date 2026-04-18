@@ -4,14 +4,12 @@ using System.Text;
 
 namespace SubscriptionPlatformApp.Application.Abstractions.Providers
 {
-    public interface IEmailBaseProvider
+    public interface IEmailService
     {
-        Task<bool> SendEmailAsync(
+        Task<bool> SendVerificationEmailAsync(
             string email,
             string fullName,
-            string subject,
-            string htmlContent,
-            string emailType,
-            CancellationToken ct = default);
+            Guid verificationToken,
+            CancellationToken ct);
     }
 }

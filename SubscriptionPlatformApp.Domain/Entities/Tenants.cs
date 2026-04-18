@@ -34,7 +34,7 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public required Guid TenantAddressId { get; set; }
 
         [Column("BillingAddressId")]
-        public Guid BillingAddressId { get; set; }
+        public Guid? BillingAddressId { get; set; }
 
         [Required]
         [MaxLength(128)]
@@ -42,7 +42,7 @@ namespace SubscriptionPlatformApp.Domain.Entities
         public required string Slug { get; set; }
 
         public Addresses TenantAddress { get; set; } = null!;
-        public Addresses BillingAddress { get; set; } = null!;
+        public Addresses? BillingAddress { get; set; }
         public ICollection<Memberships> Memberships { get; set; } = new List<Memberships>();
         public ICollection<Subscriptions> Subscriptions { get; set; } = new List<Subscriptions>();
         public ICollection<Payments> Payments { get; set; } = new List<Payments>();

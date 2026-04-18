@@ -15,19 +15,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .SetIsOriginAllowed(origin =>
-            {
-                if (string.IsNullOrWhiteSpace(origin)) return false;
-
-                var uri = new Uri(origin);
-                var host = uri.Host.ToLowerInvariant();
-
-                return host == "subscriptionplatform.com"
-                    || host.EndsWith(".vercel.app");
-            })
+            .WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -50,7 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("Frontend");
+app.UseCors("AllowFrontend");
 
 app.UseMiddleware<TenantResolutionMiddleware>();
 
