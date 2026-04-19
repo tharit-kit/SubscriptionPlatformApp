@@ -15,6 +15,8 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
 
         public Task<Memberships?> FindByTenantIdAndUserIdAsync(Guid tenantId, Guid userId, CancellationToken ct)
         {
+            if (_set == null)
+                throw new Exception("_set is null");
             return _set.FirstOrDefaultAsync(x => x.UserId == userId && x.TenantId == tenantId, ct);
         }
     }
