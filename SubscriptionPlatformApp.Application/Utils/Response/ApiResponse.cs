@@ -37,6 +37,16 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
             };
         }
 
+        public static ApiResponse<T> Fail<T>(ResponseCode code, T data)
+        {
+            return new ApiResponse<T>
+            {
+                ResponseCode = code.Code,
+                ResponseDescription = code.Description,
+                Data = data
+            };
+        }
+
         public static ApiResponse<T> Fail<T>(ResponseCode code, string customMessage)
         {
             return new ApiResponse<T>

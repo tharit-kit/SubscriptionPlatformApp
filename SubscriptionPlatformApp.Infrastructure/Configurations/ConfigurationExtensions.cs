@@ -21,7 +21,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             var connectionString = config.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString, sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure();
+                }));
 
             services
                 .AddAndValidate<SmtpSetting>(config)

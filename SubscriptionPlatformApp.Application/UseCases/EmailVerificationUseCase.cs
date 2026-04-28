@@ -27,21 +27,27 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.VerificationTokenNotFound);
                 }
 
+                var data = new EmailVerificationResponse()
+                {
+                    UserId = token.UserId,
+                    TenantId = token.TenantId,
+                };
+
                 if (token.ExpireAt < DateTime.UtcNow)
                 {
-                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.VerificationTokenExpired);
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.VerificationTokenExpired, data);
                 }
 
                 var user = token.User;
                 if (user == null)
                 {
-                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserNotFound);
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserNotFound, data);
                 }
 
                 var membership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(token.TenantId, token.UserId, ct);
                 if (membership == null)
                 {
-                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.MembershipNotFound);
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.MembershipNotFound, data);
                 }
 
                 if (user.UserStatus == UserStatus.Pending)
@@ -65,11 +71,6 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserRejected);
                 }
 
-                var data = new EmailVerificationResponse()
-                {
-                    UserId = token.UserId,
-                    TenantId = token.TenantId,
-                };
                 return ApiResponse.Success<EmailVerificationResponse>(data);
             }
             catch (Exception ex)
