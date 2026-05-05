@@ -30,6 +30,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode EmailAlreadyVerified =
             new("EMAIL_ALREADY_VERIFIED", "Email has been verified");
 
+        public static readonly ResponseCode Unauthorized =
+            new("UNAUTHORIZED", "Unauthorized");
+
         public static readonly ResponseCode SystemError =
             new("SYSTEM_ERROR", "Unexpected error occurred");
     }

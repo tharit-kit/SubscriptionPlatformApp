@@ -17,5 +17,13 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
         {
             return _set.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserId == userId && x.TenantId == tenantId, ct);
         }
+
+        public Task<List<Memberships>> FindByUserId(Guid userId, CancellationToken ct)
+        {
+            return _set.IgnoreQueryFilters()
+                .Where(x => x.UserId == userId)
+                .Include(x => x.Tenant)
+                .ToListAsync(ct);
+        }
     }
 }

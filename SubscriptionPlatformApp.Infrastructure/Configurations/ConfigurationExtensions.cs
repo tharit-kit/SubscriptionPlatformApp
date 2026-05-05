@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
@@ -10,6 +14,7 @@ using SubscriptionPlatformApp.Application.UseCases;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 using SubscriptionPlatformApp.Infrastructure.Providers;
 using SubscriptionPlatformApp.Infrastructure.Repositories;
+using System.Text;
 
 namespace SubscriptionPlatformApp.Infrastructure.Configurations
 {
@@ -25,6 +30,51 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
                 {
                     sqlOptions.EnableRetryOnFailure();
                 }));
+
+            services.AddCors(options =>
+             {
+                 options.AddPolicy("AllowFrontend", policy =>
+                 {
+                     policy
+                         .WithOrigins("http://localhost:5173")
+                         .AllowAnyHeader()
+                         .AllowAnyMethod()
+                         .AllowCredentials();
+                 });
+             });
+
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true; // Optional: also lowercase query parameters
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes("Z5V4uQWh376cY6XvJJra6czzAzGyEFRRylUwSTIS0wz"))
+                    };
+                });
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy("AdminOnly", policy =>
+                    policy.RequireAssertion(context =>
+                    {
+                        var httpContext = context.Resource as HttpContext;
+                        var tenant = httpContext?
+                            .RequestServices
+                            .GetRequiredService<ITenantContextAccessor>()
+                            .Current;
+
+                        return tenant?.Role == "Admin";
+                    }));
 
             services
                 .AddAndValidate<SmtpSetting>(config)
@@ -50,6 +100,7 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             services.AddScoped<ITenantRegistrationUseCase, TenantRegistrationUseCase>();
             services.AddScoped<IEmailVerificationUseCase, EmailVerificationUseCase>();
             services.AddScoped<IResendVerificationEmailUseCase, ResendVerificationEmailUseCase>();
+            services.AddScoped<ILoginUseCase, LoginUseCase>();
 
             // Add Services for providers
             services.AddScoped<IEmailService, EmailService>();

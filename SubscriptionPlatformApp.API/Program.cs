@@ -13,24 +13,6 @@ builder.Services
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy
-            .WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});
-
-builder.Services.Configure<RouteOptions>(options =>
-{
-    options.LowercaseUrls = true;
-    options.LowercaseQueryStrings = true; // Optional: also lowercase query parameters
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +24,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
+
+app.UseAuthentication();
 
 app.UseMiddleware<TenantResolutionMiddleware>();
 

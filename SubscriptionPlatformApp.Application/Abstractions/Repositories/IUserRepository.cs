@@ -7,4 +7,5 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Repositories;
 public interface IUserRepository : IRepositoryBase<Users>
 {
     Task<Users?> FindById(Guid id, CancellationToken ct);
+    Task<Users?> FindByEmail(string email, CancellationToken ct);
 }

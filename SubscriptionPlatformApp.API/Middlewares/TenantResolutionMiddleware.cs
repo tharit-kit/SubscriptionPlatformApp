@@ -1,5 +1,6 @@
 ﻿using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.DTOs.Common;
+using SubscriptionPlatformApp.Domain.Entities;
 
 namespace SubscriptionPlatformApp.API.Middlewares
 {
@@ -36,10 +37,31 @@ namespace SubscriptionPlatformApp.API.Middlewares
                 return;
             }
 
+            var userIdClaim = context.User.FindFirst("userId")?.Value;
+
+            if (userIdClaim == null)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("User not authorized.");
+                return;
+            }
+
+            var userId = Guid.Parse(userIdClaim);
+
+            var membership = await unitOfWork.Membership.FindByTenantIdAndUserIdAsync(tenant.TenantId, userId, context.RequestAborted);
+
+            if (membership == null)
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return;
+            }
+
             tenantContextAccessor.Current = new TenantContext
             {
                 TenantId = tenant.TenantId,
-                Slug = tenant.Slug
+                Slug = tenant.Slug,
+                UserId = userId,
+                Role = membership.Role ?? string.Empty
             };
 
             await _next(context);

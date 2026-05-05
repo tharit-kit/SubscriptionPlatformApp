@@ -16,4 +16,9 @@ public class UserRepository : GenericRepository<Users>, IUserRepository
     {
         return _set.FirstOrDefaultAsync(x => x.UserId == id, ct);
     }
+
+    public Task<Users?> FindByEmail(string email, CancellationToken ct)
+    {
+        return _set.FirstOrDefaultAsync(x => x.Email == email, ct);
+    }
 }

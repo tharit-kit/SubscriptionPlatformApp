@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
+using SubscriptionPlatformApp.Application.DTOs.UseCases.LoginUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.ResendVerificationEmailUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.TenantRegistrationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.UserVerificationUseCase;
 using SubscriptionPlatformApp.Application.Utils.Response;
+using LoginRequest = SubscriptionPlatformApp.Application.DTOs.UseCases.LoginUseCase.LoginRequest;
 
 namespace SubscriptionPlatformApp.API.Controllers
 {
@@ -15,14 +17,17 @@ namespace SubscriptionPlatformApp.API.Controllers
         private readonly ITenantRegistrationUseCase _tenantRegistrationUseCase;
         private readonly IEmailVerificationUseCase _emailVerificationUseCase;
         private readonly IResendVerificationEmailUseCase _resendVerificationEmailUseCase;
+        private readonly ILoginUseCase _loginUseCase;
 
         public AuthController(ITenantRegistrationUseCase tenantRegistrationUseCase, 
             IEmailVerificationUseCase emailVerificationUseCase, 
-            IResendVerificationEmailUseCase resendVerificationEmailUseCase)
+            IResendVerificationEmailUseCase resendVerificationEmailUseCase,
+            ILoginUseCase loginUseCase)
         {
             _tenantRegistrationUseCase = tenantRegistrationUseCase;
             _emailVerificationUseCase = emailVerificationUseCase;
             _resendVerificationEmailUseCase = resendVerificationEmailUseCase;
+            _loginUseCase = loginUseCase;
         }
 
         [HttpPost("register")]
@@ -60,6 +65,19 @@ namespace SubscriptionPlatformApp.API.Controllers
             }
 
             var response = await _resendVerificationEmailUseCase.ExecuteAsync(request, ct);
+
+            return Ok(response);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
+        {
+            if (request == null)
+            {
+                return BadRequest(ApiResponse.Fail<LoginResponse>(ResponseCodes.InvalidRequest));
+            }
+
+            var response = await _loginUseCase.ExecuteAsync(request, ct);
 
             return Ok(response);
         }
