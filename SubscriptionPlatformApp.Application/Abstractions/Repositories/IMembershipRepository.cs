@@ -7,5 +7,6 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Repositories
     {
         Task<Memberships?> FindByTenantIdAndUserIdAsync(Guid tenantId, Guid userId, CancellationToken ct);
         Task<List<Memberships>> FindByUserId(Guid userId, CancellationToken ct);
+        Task<List<Memberships>> GetMembershipByTenantId(CancellationToken ct);
     }
 }

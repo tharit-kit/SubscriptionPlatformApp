@@ -41,26 +41,35 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 var user = token.User;
                 if (user == null)
                 {
-                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserNotFound, data);
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.UserNotFound);
                 }
 
                 var membership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(token.TenantId, token.UserId, ct);
                 if (membership == null)
                 {
-                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.MembershipNotFound, data);
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.MembershipNotFound);
                 }
 
-                if (user.UserStatus == UserStatus.Pending)
+                var tenant = await _unitOfWork.Tenant.FindByIdAsync(token.TenantId, ct);
+                if (tenant == null)
+                {
+                    return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.TenantNotFound);
+                }
+
+                if (user.UserStatus == UserStatus.Pending || membership.MemberStatus == MemberStatus.Pending || tenant.TenantStatus == TenantStatus.Pending)
                 {
                     // email not verified
                     user.UserStatus = UserStatus.Active;
                     membership.MemberStatus = MemberStatus.Active;
+                    tenant.TenantStatus = TenantStatus.Active;
 
                     _unitOfWork.User.Update(user);
                     _unitOfWork.Membership.Update(membership);
+                    _unitOfWork.Tenant.Update(tenant);
+
                     await _unitOfWork.SaveChangesAsync(ct);
                 }
-                else if (user.UserStatus == UserStatus.Active)
+                else if (user.UserStatus == UserStatus.Active && membership.MemberStatus == MemberStatus.Active && tenant.TenantStatus == TenantStatus.Active)
                 {
                     // email already verified
                     return ApiResponse.Fail<EmailVerificationResponse>(ResponseCodes.EmailAlreadyVerified);

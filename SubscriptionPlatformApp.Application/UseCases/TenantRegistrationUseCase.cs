@@ -38,22 +38,30 @@ namespace SubscriptionPlatformApp.Application.UseCases
 
             try
             {
-                var generatedSalt = PasswordHasher.GenerateSalt();
-                var hashedPassword = PasswordHasher.GenerateHash(request.NewAdmin.ConfirmPassword, generatedSalt);
-
-                var newAdmin = new Users
+                var user = await _unitOfWork.User.FindByEmail(request.NewAdmin.Email, ct);
+                if (user == null)
                 {
-                    UserId = newAdminId,
-                    Email = request.NewAdmin.Email,
-                    FullName = request.NewAdmin.FullName,
-                    HashedPassword = hashedPassword,
-                    GeneratedSalt = generatedSalt,
-                    UserStatus = UserStatus.Pending,
-                    CreatedAt = now,
-                    CreatedBy = newAdminId
-                };
-                await _unitOfWork.User.AddAsync(newAdmin, ct);
+                    var generatedSalt = PasswordHasher.GenerateSalt();
+                    var hashedPassword = PasswordHasher.GenerateHash(request.NewAdmin.ConfirmPassword, generatedSalt);
 
+                    var newAdmin = new Users
+                    {
+                        UserId = newAdminId,
+                        Email = request.NewAdmin.Email,
+                        FullName = request.NewAdmin.FullName,
+                        HashedPassword = hashedPassword,
+                        GeneratedSalt = generatedSalt,
+                        UserStatus = UserStatus.Pending,
+                        CreatedAt = now,
+                        CreatedBy = newAdminId
+                    };
+                    await _unitOfWork.User.AddAsync(newAdmin, ct);
+                }
+                else
+                {
+                    newAdminId = user.UserId;
+                }
+                
                 var newTenantAddress = new Addresses
                 {
                     AddressId = newTenantAddressId,

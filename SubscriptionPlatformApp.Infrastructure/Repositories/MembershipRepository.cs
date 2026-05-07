@@ -25,5 +25,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
                 .Include(x => x.Tenant)
                 .ToListAsync(ct);
         }
+
+        public Task<List<Memberships>> GetMembershipByTenantId(CancellationToken ct)
+        {
+            return _set.Include(x => x.User).ToListAsync(ct);
+        }
     }
 }

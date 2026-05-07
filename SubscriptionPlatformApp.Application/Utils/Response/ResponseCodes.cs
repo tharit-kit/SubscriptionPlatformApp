@@ -18,6 +18,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode MembershipNotFound =
             new("MEMBERSHIP_NOT_FOUND", "Membership not found");
 
+        public static readonly ResponseCode TenantNotFound =
+            new("TENANT_NOT_FOUND", "Tenant not found");
+
         public static readonly ResponseCode VerificationTokenNotFound =
             new("VERIFICATION_TOKEN_NOT_FOUND", "Verification token not found");
 

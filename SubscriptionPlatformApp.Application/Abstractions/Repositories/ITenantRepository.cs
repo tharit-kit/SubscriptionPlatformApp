@@ -10,5 +10,6 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Repositories
     {
         Task<Tenants?> FindBySlugAsync(string slug, CancellationToken ct);
         Task<bool> SlugExistsAsync(string slug, CancellationToken ct);
+        Task<Tenants?> FindByIdAsync(Guid id, CancellationToken ct);
     }
 }

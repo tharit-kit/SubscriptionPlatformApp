@@ -24,5 +24,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
         {
             return _set.AnyAsync(x => x.Slug == slug, ct);
         }
+
+        public Task<Tenants?> FindByIdAsync(Guid id, CancellationToken ct)
+        {
+            return _set.FirstOrDefaultAsync(x => x.TenantId == id, ct);
+        }
     }
 }
