@@ -39,7 +39,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<LoginResponse>(ResponseCodes.Unauthorized);
                 }
 
-                var memberships = await _unitOfWork.Membership.FindByUserId(user.UserId, ct);
+                var memberships = await _unitOfWork.Membership.FindByUserId(user.UserId, false, ct);
                 var token = JwtGenerator.GenerateJwt(user);
 
                 var data = new LoginResponse()

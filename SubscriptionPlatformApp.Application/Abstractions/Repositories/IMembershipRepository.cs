@@ -6,7 +6,7 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Repositories
     public interface IMembershipRepository : IRepositoryBase<Memberships>
     {
         Task<Memberships?> FindByTenantIdAndUserIdAsync(Guid tenantId, Guid userId, CancellationToken ct);
-        Task<List<Memberships>> FindByUserId(Guid userId, CancellationToken ct);
+        Task<List<Memberships>> FindByUserId(Guid userId, bool includeQueryFilters, CancellationToken ct);
         Task<List<Memberships>> GetMembershipByTenantId(CancellationToken ct);
     }
 }

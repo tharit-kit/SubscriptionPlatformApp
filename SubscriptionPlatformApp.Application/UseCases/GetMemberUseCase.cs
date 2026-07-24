@@ -28,7 +28,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 var data = members.Select(x => new MemberInfo
                 {
                     FullName = x.User.FullName,
-                    Role = x.Role,
+                    Role = x.Role ?? string.Empty,
                     MemberStatus = x.MemberStatus.ToString(),
                     JoinAt = x.JoinedAt.ToString()
                 }).ToList();

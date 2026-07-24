@@ -18,9 +18,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
             return _set.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserId == userId && x.TenantId == tenantId, ct);
         }
 
-        public Task<List<Memberships>> FindByUserId(Guid userId, CancellationToken ct)
+        public Task<List<Memberships>> FindByUserId(Guid userId, bool includeQueryFilters, CancellationToken ct)
         {
-            return _set.IgnoreQueryFilters()
+            var query = includeQueryFilters ? _set : _set.IgnoreQueryFilters();
+            return query
                 .Where(x => x.UserId == userId)
                 .Include(x => x.Tenant)
                 .ToListAsync(ct);
