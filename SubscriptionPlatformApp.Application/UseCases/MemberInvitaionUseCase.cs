@@ -30,18 +30,18 @@ namespace SubscriptionPlatformApp.Application.UseCases
             {
                 if (!_currentUserService.IsAuthenticated)
                 {
-
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.Unauthorized);
                 }
 
                 if (_currentUserService.Role != RoleConstants.ADMIN_ROLE)
                 {
-
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.InsufficientPrivilege);
                 }
 
                 var membership = await _unitOfWork.Membership.FindByUserId(_currentUserService.UserId, true, ct);
                 if (membership == null)
                 {
-
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.MembershipNotFound);
                 }
 
 

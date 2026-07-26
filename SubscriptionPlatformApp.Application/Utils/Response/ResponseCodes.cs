@@ -36,6 +36,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode Unauthorized =
             new("UNAUTHORIZED", "Unauthorized");
 
+        public static readonly ResponseCode InsufficientPrivilege =
+            new("INSUFFICIENT_PRIVILEGE", "You do not have permission to perform this action");
+
         public static readonly ResponseCode SystemError =
             new("SYSTEM_ERROR", "Unexpected error occurred");
     }
