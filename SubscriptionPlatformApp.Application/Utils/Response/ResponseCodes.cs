@@ -39,6 +39,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode InsufficientPrivilege =
             new("INSUFFICIENT_PRIVILEGE", "You do not have permission to perform this action");
 
+        public static readonly ResponseCode UserAlreadyInTenant =
+            new("USER_ALREADY_IN_TENANT", "The user is already a member of this tenant");
+
         public static readonly ResponseCode SystemError =
             new("SYSTEM_ERROR", "Unexpected error occurred");
     }

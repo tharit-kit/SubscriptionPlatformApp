@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SubscriptionPlatformApp.Domain.Entities.Shared;
+using SubscriptionPlatformApp.Domain.Enums;
 
 namespace SubscriptionPlatformApp.Domain.Entities;
 
@@ -32,9 +33,8 @@ public class MemberInvitations : BaseEntity
     public required string Role { get; set; }
 
     [Required]
-    [MaxLength(64)]
     [Column("InvitationStatus")]
-    public required string InvitationStatus { get; set; }
+    public required InvitationStatus InvitationStatus { get; set; }
 
     [Required]
     [MaxLength(128)]

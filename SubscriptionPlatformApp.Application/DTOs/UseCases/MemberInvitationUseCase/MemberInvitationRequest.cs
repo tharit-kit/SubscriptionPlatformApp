@@ -7,5 +7,6 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseC
     public class MemberInvitationRequest
     {
         public required string Email { get; set; }
+        public required string Role { get; set; }
     }
 }
