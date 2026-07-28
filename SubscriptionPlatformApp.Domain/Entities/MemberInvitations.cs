@@ -21,11 +21,11 @@ public class MemberInvitations : BaseEntity
     [Column("InvitedEmail")]
     public required string InvitedEmail { get; set; }
 
-    [Column("InvitedUserId")]
-    public Guid? InvitedUserId { get; set; }
+    //[Column("InvitedUserId")]
+    //public Guid? InvitedUserId { get; set; }
     
-    [Column("InvitedByUserId")]
-    public Guid InvitedByUserId { get; set; }
+    //[Column("InvitedByUserId")]
+    //public Guid InvitedByUserId { get; set; }
     
     [Required]
     [MaxLength(64)]

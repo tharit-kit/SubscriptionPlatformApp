@@ -8,12 +8,14 @@ using Microsoft.IdentityModel.Tokens;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
+using SubscriptionPlatformApp.Application.Abstractions.Services;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.Helpers.AppSettings;
 using SubscriptionPlatformApp.Application.UseCases;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 using SubscriptionPlatformApp.Infrastructure.Providers;
 using SubscriptionPlatformApp.Infrastructure.Repositories;
+using SubscriptionPlatformApp.Infrastructure.Services;
 using System.Text;
 
 namespace SubscriptionPlatformApp.Infrastructure.Configurations
@@ -109,6 +111,9 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
 
             services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            services.AddSingleton<ISecureTokenGenerator, SecureTokenGenerator>();
 
             return services;
         }

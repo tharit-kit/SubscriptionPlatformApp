@@ -6,6 +6,6 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseC
 {
     public class MemberInvitationResponse
     {
-        public string? MemberId { get; set; }
+        public Guid InvitationId { get; set; }
     }
 }

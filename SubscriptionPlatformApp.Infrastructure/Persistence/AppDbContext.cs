@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Domain.Entities;
-using System;
 
 namespace SubscriptionPlatformApp.Infrastructure.Persistence;
 
@@ -10,14 +9,14 @@ public class AppDbContext : DbContext
     //private readonly ITenantContextAccessor _tenantContextAccessor;
     public Guid? CurrentTenantId { get; set; }
 
-    public AppDbContext(DbContextOptions<AppDbContext> options, 
-        ITenantContextAccessor tenantContextAccessor) : base(options) 
+    public AppDbContext(DbContextOptions<AppDbContext> options,
+        ITenantContextAccessor tenantContextAccessor) : base(options)
     {
         //_tenantContextAccessor = tenantContextAccessor;
         CurrentTenantId = tenantContextAccessor.Current?.TenantId;
     }
 
-    
+
 
     public DbSet<Users> Users => Set<Users>();
     public DbSet<Tenants> Tenants => Set<Tenants>();

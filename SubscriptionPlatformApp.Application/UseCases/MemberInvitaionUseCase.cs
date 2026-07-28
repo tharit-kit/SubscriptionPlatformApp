@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Services;
+using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.GetMemberUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseCase;
@@ -14,17 +15,19 @@ using System.Text;
 
 namespace SubscriptionPlatformApp.Application.UseCases
 {
-    public class MemberInvitaionUseCase
+    public class MemberInvitaionUseCase : IMemberInvitaionUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ISecureTokenGenerator _secureTokenGenerator;
         private readonly ILogger<MemberInvitaionUseCase> _logger;
 
-        public MemberInvitaionUseCase(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, ILogger<MemberInvitaionUseCase> logger)
+        public MemberInvitaionUseCase(IUnitOfWork unitOfWork, ISecureTokenGenerator secureTokenGenerator, ICurrentUserService currentUserService, ILogger<MemberInvitaionUseCase> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _currentUserService = currentUserService;
+            _secureTokenGenerator = secureTokenGenerator;
         }
 
         public async Task<ApiResponse<MemberInvitationResponse>> ExecuteAsync(MemberInvitationRequest request, CancellationToken ct)
@@ -63,28 +66,22 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     TenantId = _currentUserService.TenantId,
                     InvitedEmail = request.Email,
                     Role = request.Role,
-                    HashedToken = 
+                    HashedToken = _secureTokenGenerator.Generate().Hash,
                     CreatedBy = _currentUserService.UserId,
                     CreatedAt = DateTime.UtcNow,
                     InvitationStatus = InvitationStatus.Invited,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(15),
                 };
-                //var members = await _unitOfWork.Membership.GetMembershipByTenantId(ct);
 
-                //var data = members.Select(x => new MemberInfo
-                //{
-                //    FullName = x.User.FullName,
-                //    Role = x.Role ?? string.Empty,
-                //    MemberStatus = x.MemberStatus.ToString(),
-                //    JoinAt = x.JoinedAt.ToString()
-                //}).ToList();
+                await _unitOfWork.MemberInvitation.AddAsync(invitation, ct);
+                await _unitOfWork.SaveChangesAsync(ct);
 
-                //var res = new GetMemberResponse
-                //{
-                //    MemberInfos = data,
-                //};
+                var res = new MemberInvitationResponse
+                {
+                    InvitationId = invitation.MemberInvitationId
+                };
 
-                //return ApiResponse.Success<GetMemberResponse>(res);
+                return ApiResponse.Success<MemberInvitationResponse>(res);
             }
             catch (Exception ex)
             {
