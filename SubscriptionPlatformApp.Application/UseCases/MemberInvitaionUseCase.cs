@@ -76,6 +76,8 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 await _unitOfWork.MemberInvitation.AddAsync(invitation, ct);
                 await _unitOfWork.SaveChangesAsync(ct);
 
+
+
                 var res = new MemberInvitationResponse
                 {
                     InvitationId = invitation.MemberInvitationId

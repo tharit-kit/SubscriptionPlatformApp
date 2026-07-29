@@ -43,6 +43,43 @@ namespace SubscriptionPlatformApp.Infrastructure.Providers
             );
         }
 
+        public async Task<bool> SendMemberInvitationEmailAsync(
+            string email,
+            string fullName,
+            string tenantName,
+            string inviterName,
+            string roleName,
+            string memberInvitationToken,
+            DateTime expirationDate,
+            CancellationToken ct)
+        {
+            var template = GetEmailTemplate("MemberInvitationEmailTemplate.html");
+
+            var memberInvitationLink =
+                $"{_frontendSetting.BaseUrl}/invite-member" +
+                $"?token={memberInvitationToken}";
+
+            var htmlContent = template
+                .Replace("{{TENANT_NAME}}", tenantName)
+                .Replace("{{INVITER_NAME}}", inviterName)
+                .Replace("{{INVITEE_EMAIL}}", email)
+                .Replace("{{ROLE_NAME}}", roleName)
+                .Replace(
+                    "{{EXPIRATION_DATE}}",
+                    expirationDate.ToString("MMMM d, yyyy 'at' h:mm tt"))
+                .Replace("{{INVITATION_URL}}", memberInvitationLink)
+                .Replace("{{CURRENT_YEAR}}", DateTime.UtcNow.Year.ToString());
+
+            return await SendEmailAsync(
+                email,
+                fullName,
+                $"You're invited to join {tenantName}",
+                htmlContent,
+                "Member Invitation",
+                ct
+            );
+        }
+
         private async Task<bool> SendEmailAsync(
             string email,
             string fullName,
