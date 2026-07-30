@@ -11,5 +11,15 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Providers
             string fullName,
             Guid verificationToken,
             CancellationToken ct);
+
+        Task<bool> SendMemberInvitationEmailAsync(
+            string email,
+            string fullName,
+            string tenantName,
+            string inviterName,
+            string roleName,
+            string memberInvitationToken,
+            DateTime expirationDate,
+            CancellationToken ct);
     }
 }

@@ -42,6 +42,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode UserAlreadyInTenant =
             new("USER_ALREADY_IN_TENANT", "The user is already a member of this tenant");
 
+        public static readonly ResponseCode MemberInvitationNotFound =
+            new("MEMBER_INVITATION_NOT_FOUND", "Member invitation not found");
+
         public static readonly ResponseCode SystemError =
             new("SYSTEM_ERROR", "Unexpected error occurred");
     }

@@ -1,4 +1,5 @@
-﻿using SubscriptionPlatformApp.Application.Abstractions.Persistence;
+﻿using Microsoft.EntityFrameworkCore;
+using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
 using SubscriptionPlatformApp.Domain.Entities;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
@@ -12,5 +13,10 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
     public class MemberInvitationRepository : GenericRepository<MemberInvitations>, IMemberInvitationRepository
     {
         public MemberInvitationRepository(AppDbContext db) : base(db) { }
+
+        public Task<MemberInvitations?> FindByToken(string token, CancellationToken ct)
+        {
+            return _set.FirstOrDefaultAsync(x => x.HashedToken == token, ct);
+        }
     }
 }

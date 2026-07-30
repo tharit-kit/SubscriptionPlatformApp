@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
+using SubscriptionPlatformApp.Application.Abstractions.Providers;
 using SubscriptionPlatformApp.Application.Abstractions.Services;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases;
@@ -20,14 +21,20 @@ namespace SubscriptionPlatformApp.Application.UseCases
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
         private readonly ISecureTokenGenerator _secureTokenGenerator;
+        private readonly IEmailService _emailService;
         private readonly ILogger<MemberInvitaionUseCase> _logger;
 
-        public MemberInvitaionUseCase(IUnitOfWork unitOfWork, ISecureTokenGenerator secureTokenGenerator, ICurrentUserService currentUserService, ILogger<MemberInvitaionUseCase> logger)
+        public MemberInvitaionUseCase(IUnitOfWork unitOfWork,
+                                      ISecureTokenGenerator secureTokenGenerator,
+                                      ICurrentUserService currentUserService,
+                                      IEmailService emailService,
+                                      ILogger<MemberInvitaionUseCase> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _currentUserService = currentUserService;
             _secureTokenGenerator = secureTokenGenerator;
+            _emailService = emailService;
         }
 
         public async Task<ApiResponse<MemberInvitationResponse>> ExecuteAsync(MemberInvitationRequest request, CancellationToken ct)
@@ -60,6 +67,18 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     }
                 }
 
+                var tenant = await _unitOfWork.Tenant.FindByIdAsync(_currentUserService.TenantId, ct);
+                if (tenant == null)
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.TenantNotFound);
+                }
+
+                var inviter = await _unitOfWork.User.FindById(_currentUserService.UserId, ct);
+                if (inviter == null)
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserNotFound);
+                }
+
                 var invitation = new MemberInvitations
                 {
                     MemberInvitationId = Guid.NewGuid(),
@@ -76,7 +95,18 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 await _unitOfWork.MemberInvitation.AddAsync(invitation, ct);
                 await _unitOfWork.SaveChangesAsync(ct);
 
-
+                var isSendEmail = await _emailService.SendMemberInvitationEmailAsync(request.Email,
+                                                                                     "New Member",
+                                                                                     tenant.TenantName,
+                                                                                     inviter.FullName,
+                                                                                     request.Role,
+                                                                                     invitation.HashedToken,
+                                                                                     invitation.ExpiresAt,
+                                                                                     ct);
+                if (isSendEmail)
+                {
+                    _logger.LogInformation("Member invitation email sent successfully");
+                }
 
                 var res = new MemberInvitationResponse
                 {
