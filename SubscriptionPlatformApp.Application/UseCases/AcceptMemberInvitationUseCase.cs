@@ -1,8 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.DTOs.UseCases;
+using SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitationUseCase;
+using SubscriptionPlatformApp.Application.DTOs.UseCases.TenantRegistrationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.VerifyMemberInvitation;
+using SubscriptionPlatformApp.Application.Helpers;
 using SubscriptionPlatformApp.Application.Utils.Response;
+using SubscriptionPlatformApp.Domain.Entities;
+using SubscriptionPlatformApp.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,17 +35,28 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.MemberInvitationNotFound);
                 }
 
-                var isNewUser = true;
-                var invitee = await _unitOfWork.User.FindByEmail(invitation.InvitedEmail, ct);
-                if (invitee != null)
+                if (request.IsNewUser)
                 {
-                    isNewUser = false;
-                }
+                    var generatedSalt = PasswordHasher.GenerateSalt();
+                    var hashedPassword = PasswordHasher.GenerateHash(request.ConfirmPassword ?? "", generatedSalt);
 
-                var res = new VerifyMemberInvitationResponse
+                    var newUser = new Users
+                    {
+                        UserId = newAdminId,
+                        Email = request.NewAdmin.Email,
+                        FullName = request.NewAdmin.FullName,
+                        HashedPassword = hashedPassword,
+                        GeneratedSalt = generatedSalt,
+                        UserStatus = UserStatus.Pending,
+                        CreatedAt = now,
+                        CreatedBy = newAdminId
+                    };
+                    await _unitOfWork.User.AddAsync(newUser, ct);
+                }
+                else
                 {
-                    IsNewUser = isNewUser,
-                };
+                    var invitee = await _unitOfWork.User.FindByEmail(invitation.InvitedEmail, ct);
+                }
 
                 return ApiResponse.Success<AcceptMemberInvitationUseCaseResponse>(res);
             }
