@@ -8,7 +8,7 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitati
     {
         public required string Token { get; set; }
         public required bool IsNewUser { get; set; }
-        public string? Fullname { get; set; }
+        public string? FullName { get; set; }
         public string? Password { get; set; }
         public string? ConfirmPassword { get; set; }
     }

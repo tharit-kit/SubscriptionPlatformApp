@@ -6,5 +6,7 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitati
 {
     public class AcceptMemberInvitationUseCaseResponse
     {
+        public required string FullName { get; set; }
+        public required string TenantName { get; set; }
     }
 }

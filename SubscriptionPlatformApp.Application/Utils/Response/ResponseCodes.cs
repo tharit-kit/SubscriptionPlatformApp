@@ -45,6 +45,9 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode MemberInvitationNotFound =
             new("MEMBER_INVITATION_NOT_FOUND", "Member invitation not found");
 
+        public static readonly ResponseCode MemberInvitationExpired =
+            new("MEMBER_INVITATION_EXPIRED", "Member invitation has been expired");
+
         public static readonly ResponseCode SystemError =
             new("SYSTEM_ERROR", "Unexpected error occurred");
     }

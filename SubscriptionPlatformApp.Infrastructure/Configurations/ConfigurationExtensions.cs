@@ -105,6 +105,8 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
             services.AddScoped<ILoginUseCase, LoginUseCase>();
             services.AddScoped<IGetMemberUseCase, GetMemberUseCase>();
             services.AddScoped<IMemberInvitaionUseCase, MemberInvitaionUseCase>();
+            services.AddScoped<IVerifyMemberInvitationUseCase, VerifyMemberInvitationUseCase>();
+            services.AddScoped<IAcceptMemberInvitationUseCase, AcceptMemberInvitationUseCase>();
 
             // Add Services for providers
             services.AddScoped<IEmailService, EmailService>();
