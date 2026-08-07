@@ -7,5 +7,6 @@ namespace SubscriptionPlatformApp.Application.DTOs.UseCases.VerifyMemberInvitati
     public class VerifyMemberInvitationResponse
     {
         public bool IsNewUser { get; set; }
+        public required string Email { get; set; }
     }
 }

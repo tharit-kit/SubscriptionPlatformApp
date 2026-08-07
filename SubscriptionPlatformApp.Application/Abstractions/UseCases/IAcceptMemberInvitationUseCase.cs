@@ -8,6 +8,6 @@ namespace SubscriptionPlatformApp.Application.Abstractions.UseCases
 {
     public interface IAcceptMemberInvitationUseCase
     {
-        Task<ApiResponse<AcceptMemberInvitationUseCaseResponse>> ExecuteAsync(AcceptMemberInvitationUseCaseRequest request, CancellationToken ct);
+        Task<ApiResponse<AcceptMemberInvitationResponse>> ExecuteAsync(AcceptMemberInvitationRequest request, CancellationToken ct);
     }
 }

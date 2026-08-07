@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitationUseCase
 {
-    public class AcceptMemberInvitationUseCaseRequest
+    public class AcceptMemberInvitationRequest
     {
         public required string Token { get; set; }
         public required bool IsNewUser { get; set; }

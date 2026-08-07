@@ -47,6 +47,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 var res = new VerifyMemberInvitationResponse
                 {
                     IsNewUser = isNewUser,
+                    Email = invitation.InvitedEmail,
                 };
 
                 return ApiResponse.Success<VerifyMemberInvitationResponse>(res);

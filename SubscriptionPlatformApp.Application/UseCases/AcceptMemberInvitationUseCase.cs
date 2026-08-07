@@ -26,20 +26,20 @@ namespace SubscriptionPlatformApp.Application.UseCases
             _logger = logger;
         }
 
-        public async Task<ApiResponse<AcceptMemberInvitationUseCaseResponse>> ExecuteAsync(AcceptMemberInvitationUseCaseRequest request, CancellationToken ct)
+        public async Task<ApiResponse<AcceptMemberInvitationResponse>> ExecuteAsync(AcceptMemberInvitationRequest request, CancellationToken ct)
         {
             try
             {
                 var invitation = await _unitOfWork.MemberInvitation.FindByToken(request.Token, ct);
                 if (invitation == null)
                 {
-                    return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.MemberInvitationNotFound);
+                    return ApiResponse.Fail<AcceptMemberInvitationResponse>(ResponseCodes.MemberInvitationNotFound);
                 }
 
                 var tenant = await _unitOfWork.Tenant.FindByIdAsync(invitation.TenantId, ct);
                 if (tenant == null)
                 {
-                    return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.TenantNotFound);
+                    return ApiResponse.Fail<AcceptMemberInvitationResponse>(ResponseCodes.TenantNotFound);
                 }
 
                 var newMemberId = Guid.NewGuid();
@@ -48,7 +48,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
 
                 if (invitation.ExpiresAt < now)
                 {
-                    return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.MemberInvitationExpired);
+                    return ApiResponse.Fail<AcceptMemberInvitationResponse>(ResponseCodes.MemberInvitationExpired);
                 }
 
                 if (request.IsNewUser)
@@ -75,7 +75,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     var invitee = await _unitOfWork.User.FindByEmail(invitation.InvitedEmail, ct);
                     if (invitee == null)
                     {
-                        return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.UserNotFound);
+                        return ApiResponse.Fail<AcceptMemberInvitationResponse>(ResponseCodes.UserNotFound);
                     }
 
                     newMemberId = invitee.UserId;
@@ -107,18 +107,18 @@ namespace SubscriptionPlatformApp.Application.UseCases
 
 
 
-                var res = new AcceptMemberInvitationUseCaseResponse
+                var res = new AcceptMemberInvitationResponse
                 {
                     FullName = memberName ?? "",
                     TenantName = tenant.TenantName
                 };
 
-                return ApiResponse.Success<AcceptMemberInvitationUseCaseResponse>(res);
+                return ApiResponse.Success<AcceptMemberInvitationResponse>(res);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Something went wrong");
-                return ApiResponse.Fail<AcceptMemberInvitationUseCaseResponse>(ResponseCodes.SystemError);
+                return ApiResponse.Fail<AcceptMemberInvitationResponse>(ResponseCodes.SystemError);
             }
         }
     }

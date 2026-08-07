@@ -56,7 +56,7 @@ namespace SubscriptionPlatformApp.Infrastructure.Providers
             var template = GetEmailTemplate("MemberInvitationEmailTemplate.html");
 
             var memberInvitationLink =
-                $"{_frontendSetting.BaseUrl}/invite-member" +
+                $"{_frontendSetting.BaseUrl}/accept-member" +
                 $"?token={memberInvitationToken}";
 
             var htmlContent = template
