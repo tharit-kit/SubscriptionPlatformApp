@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseCase;
@@ -7,6 +8,7 @@ using SubscriptionPlatformApp.Application.Utils.Response;
 
 namespace SubscriptionPlatformApp.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TenantController : ControllerBase
@@ -48,6 +50,7 @@ namespace SubscriptionPlatformApp.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("verify-member-invitation")]
         public async Task<IActionResult> VerifyMemberInvitation([FromBody] VerifyMemberInvitationRequest request, CancellationToken ct)
         {
@@ -61,6 +64,7 @@ namespace SubscriptionPlatformApp.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpGet("accept-member-invitation")]
         public async Task<IActionResult> AcceptMemberInvitation([FromBody] AcceptMemberInvitationRequest request, CancellationToken ct)
         {
