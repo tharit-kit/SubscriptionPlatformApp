@@ -48,6 +48,6 @@ public class MemberInvitations : BaseEntity
     public DateTime? AcceptedAt { get; set; }
     
     public Tenants Tenant { get; set; } = null!;
-    public Users? InvitedUser { get; set; }
-    public Users InvitedByUser { get; set; } = null!;
+    //public Users? InvitedUser { get; set; }
+    //public Users InvitedByUser { get; set; } = null!;
 }

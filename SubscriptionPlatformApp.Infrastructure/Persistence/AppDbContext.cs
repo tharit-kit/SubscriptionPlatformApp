@@ -70,15 +70,15 @@ public class AppDbContext : DbContext
                 .HasForeignKey(x => x.TenantId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            e.HasOne(x => x.InvitedByUser)
-                .WithMany(u => u.InvitationsSent)
-                .HasForeignKey(x => x.InvitedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //e.HasOne(x => x.InvitedByUser)
+            //    .WithMany(u => u.InvitationsSent)
+            //    .HasForeignKey(x => x.InvitedByUserId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
-            e.HasOne(x => x.InvitedUser)
-                .WithMany(u => u.InvitationsReceived)
-                .HasForeignKey(x => x.InvitedUserId)
-                .OnDelete(DeleteBehavior.SetNull);
+            //e.HasOne(x => x.InvitedUser)
+            //    .WithMany(u => u.InvitationsReceived)
+            //    .HasForeignKey(x => x.InvitedUserId)
+            //    .OnDelete(DeleteBehavior.SetNull);
 
             // common indexes
             e.HasIndex(x => new { x.TenantId, x.InvitedEmail });
