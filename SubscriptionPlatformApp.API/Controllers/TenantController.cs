@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseCase;
@@ -17,21 +18,27 @@ namespace SubscriptionPlatformApp.API.Controllers
         private readonly IMemberInvitaionUseCase _memberInvitaionUseCase;
         private readonly IVerifyMemberInvitationUseCase _verifyMemberInvitationUseCase;
         private readonly IAcceptMemberInvitationUseCase _acceptMemberInvitationUseCase;
+        private readonly ITenantContextAccessor _tenantContextAccessor;
 
         public TenantController(IGetMemberUseCase getMemberUseCase,
                                 IMemberInvitaionUseCase memberInvitaionUseCase,
                                 IVerifyMemberInvitationUseCase verifyMemberInvitationUseCase,
-                                IAcceptMemberInvitationUseCase acceptMemberInvitationUseCase)
+                                IAcceptMemberInvitationUseCase acceptMemberInvitationUseCase,
+                                ITenantContextAccessor tenantContextAccessor)
         {
             _getMemberUseCase = getMemberUseCase;
             _memberInvitaionUseCase = memberInvitaionUseCase;
             _verifyMemberInvitationUseCase = verifyMemberInvitationUseCase;
             _acceptMemberInvitationUseCase = acceptMemberInvitationUseCase;
+            _tenantContextAccessor = tenantContextAccessor;
         }
 
         [HttpGet("membership")]
         public async Task<IActionResult> GetMembers(CancellationToken ct)
         {
+            Console.WriteLine(
+                $"Controller TenantId: " +
+                $"{_tenantContextAccessor.Current?.TenantId}");
             var response = await _getMemberUseCase.ExecuteAsync(ct);
 
             return Ok(response);

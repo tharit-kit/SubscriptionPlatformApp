@@ -40,8 +40,8 @@ namespace SubscriptionPlatformApp.Domain.Entities
         [Column("LastLoginAt")]
         public DateTime? LastLoginAt { get; set; }
 
-        public ICollection<Memberships> Memberships { get; set; } = new List<Memberships>();
-        public ICollection<MemberInvitations> InvitationsSent { get; set; } = new List<MemberInvitations>();
-        public ICollection<MemberInvitations> InvitationsReceived { get; set; } = new List<MemberInvitations>();
+        public ICollection<Memberships> Memberships { get; set; } = [];
+        //public ICollection<MemberInvitations> InvitationsSent { get; set; } = new List<MemberInvitations>();
+        //public ICollection<MemberInvitations> InvitationsReceived { get; set; } = new List<MemberInvitations>();
     }
 }

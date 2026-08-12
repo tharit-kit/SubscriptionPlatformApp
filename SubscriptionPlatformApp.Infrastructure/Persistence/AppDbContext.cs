@@ -95,6 +95,9 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.PaymentId);
 
+            e.Property(x => x.Total)
+            .HasPrecision(18, 2);
+
             e.HasOne(p => p.Tenant)
                 .WithMany(b => b.Payments)
                 .HasForeignKey(p => p.TenantId)
