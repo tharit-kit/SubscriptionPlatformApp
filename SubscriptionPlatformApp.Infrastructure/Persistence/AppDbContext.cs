@@ -6,17 +6,17 @@ namespace SubscriptionPlatformApp.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
 {
-    //private readonly ITenantContextAccessor _tenantContextAccessor;
-    public Guid? CurrentTenantId { get; set; }
+    private readonly ITenantContextAccessor _tenantContextAccessor;
+    //public Guid? CurrentTenantId { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options,
         ITenantContextAccessor tenantContextAccessor) : base(options)
     {
-        //_tenantContextAccessor = tenantContextAccessor;
-        CurrentTenantId = tenantContextAccessor.Current?.TenantId;
+        _tenantContextAccessor = tenantContextAccessor;
+        //CurrentTenantId = tenantContextAccessor.Current?.TenantId;
     }
 
-
+    public Guid? CurrentTenantId => _tenantContextAccessor.Current?.TenantId;
 
     public DbSet<Users> Users => Set<Users>();
     public DbSet<Tenants> Tenants => Set<Tenants>();
@@ -133,18 +133,18 @@ public class AppDbContext : DbContext
         // Optional Settings
         modelBuilder.Entity<Subscriptions>()
             .HasQueryFilter(x =>
-                CurrentTenantId != null && x.TenantId == CurrentTenantId);
+                CurrentTenantId.HasValue && x.TenantId == CurrentTenantId.Value);
 
         modelBuilder.Entity<Payments>()
             .HasQueryFilter(x =>
-                CurrentTenantId != null && x.TenantId == CurrentTenantId);
+                CurrentTenantId.HasValue && x.TenantId == CurrentTenantId.Value);
 
         modelBuilder.Entity<Memberships>()
             .HasQueryFilter(x =>
-                CurrentTenantId != null && x.TenantId == CurrentTenantId);
+                CurrentTenantId.HasValue && x.TenantId == CurrentTenantId.Value);
 
         modelBuilder.Entity<MemberInvitations>()
             .HasQueryFilter(x =>
-                CurrentTenantId != null && x.TenantId == CurrentTenantId);
+                CurrentTenantId.HasValue && x.TenantId == CurrentTenantId.Value);
     }
 }
