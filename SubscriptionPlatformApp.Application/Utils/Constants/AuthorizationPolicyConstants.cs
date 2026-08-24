@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SubscriptionPlatformApp.Application.Utils.Constants
 {
-    public static class RoleConstants
+    public static class AuthorizationPolicyConstants
     {
-        public const string ADMIN_ROLE = "Admin";
+        public const string AdminOnly = "AdminOnly";
     }
 }

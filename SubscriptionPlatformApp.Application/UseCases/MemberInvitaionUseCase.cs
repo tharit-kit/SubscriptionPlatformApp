@@ -23,18 +23,21 @@ namespace SubscriptionPlatformApp.Application.UseCases
         private readonly ISecureTokenGenerator _secureTokenGenerator;
         private readonly IEmailService _emailService;
         private readonly ILogger<MemberInvitaionUseCase> _logger;
+        private readonly ITenantContextAccessor _tenantContextAccessor;
 
         public MemberInvitaionUseCase(IUnitOfWork unitOfWork,
                                       ISecureTokenGenerator secureTokenGenerator,
                                       ICurrentUserService currentUserService,
                                       IEmailService emailService,
-                                      ILogger<MemberInvitaionUseCase> logger)
+                                      ILogger<MemberInvitaionUseCase> logger,
+                                      ITenantContextAccessor tenantContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _currentUserService = currentUserService;
             _secureTokenGenerator = secureTokenGenerator;
             _emailService = emailService;
+            _tenantContextAccessor = tenantContextAccessor;
         }
 
         public async Task<ApiResponse<MemberInvitationResponse>> ExecuteAsync(MemberInvitationRequest request, CancellationToken ct)
@@ -46,12 +49,21 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.Unauthorized);
                 }
 
-                if (_currentUserService.Role != RoleConstants.ADMIN_ROLE)
+                var tenantContext = _tenantContextAccessor.Current;
+                if (tenantContext == null)
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.TenantNotFound);
+                }
+
+                if (tenantContext.Role != MembershipRole.Admin.ToString())
                 {
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.InsufficientPrivilege);
                 }
 
-                var inviterMembership = await _unitOfWork.Membership.FindByUserId(_currentUserService.UserId, true, ct);
+                var adminUserId = _currentUserService.UserId!.Value;
+                var tenantId = tenantContext.TenantId;
+
+                var inviterMembership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(tenantId, adminUserId, ct);
                 if (inviterMembership == null)
                 {
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.MembershipNotFound);
@@ -60,20 +72,20 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 var invitee = await _unitOfWork.User.FindByEmail(request.Email, ct);
                 if (invitee != null)
                 {
-                    var inviteeMembership = await _unitOfWork.Membership.FindByUserId(invitee.UserId, true, ct);
+                    var inviteeMembership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(tenantId, invitee.UserId, ct);
                     if (inviteeMembership != null)
                     {
                         return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserAlreadyInTenant);
                     }
                 }
 
-                var tenant = await _unitOfWork.Tenant.FindByIdAsync(_currentUserService.TenantId, ct);
+                var tenant = await _unitOfWork.Tenant.FindByIdAsync(tenantId, ct);
                 if (tenant == null)
                 {
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.TenantNotFound);
                 }
 
-                var inviter = await _unitOfWork.User.FindById(_currentUserService.UserId, ct);
+                var inviter = await _unitOfWork.User.FindById(adminUserId, ct);
                 if (inviter == null)
                 {
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserNotFound);
@@ -82,11 +94,11 @@ namespace SubscriptionPlatformApp.Application.UseCases
                 var invitation = new MemberInvitations
                 {
                     MemberInvitationId = Guid.NewGuid(),
-                    TenantId = _currentUserService.TenantId,
+                    TenantId = tenantId,
                     InvitedEmail = request.Email,
                     Role = request.Role,
                     HashedToken = _secureTokenGenerator.Generate().Hash,
-                    CreatedBy = _currentUserService.UserId,
+                    CreatedBy = adminUserId,
                     CreatedAt = DateTime.UtcNow,
                     InvitationStatus = InvitationStatus.Invited,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(15),

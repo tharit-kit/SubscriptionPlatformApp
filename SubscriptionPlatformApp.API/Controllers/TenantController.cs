@@ -5,6 +5,7 @@ using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.AcceptMemberInvitationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.MemberInvitationUseCase;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.VerifyMemberInvitation;
+using SubscriptionPlatformApp.Application.Utils.Constants;
 using SubscriptionPlatformApp.Application.Utils.Response;
 
 namespace SubscriptionPlatformApp.API.Controllers
@@ -44,6 +45,7 @@ namespace SubscriptionPlatformApp.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = AuthorizationPolicyConstants.AdminOnly)]
         [HttpPost("invite-member")]
         public async Task<IActionResult> InviteMember([FromBody] MemberInvitationRequest request, CancellationToken ct)
         {

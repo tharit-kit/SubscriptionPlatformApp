@@ -6,9 +6,8 @@ namespace SubscriptionPlatformApp.Application.Abstractions.Services
 {
     public interface ICurrentUserService
     {
-        Guid UserId { get; }
-        Guid TenantId { get; }
-        string? Role { get; }
+        Guid? UserId { get; }
+        string? Email { get; }
         bool IsAuthenticated { get; }
     }
 }

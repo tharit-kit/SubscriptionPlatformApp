@@ -8,37 +8,40 @@ namespace SubscriptionPlatformApp.Infrastructure.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+        public CurrentUserService(
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        private ClaimsPrincipal? User =>
-            _httpContextAccessor.HttpContext?.User;
+        public Guid? UserId
+        {
+            get
+            {
+                var value = _httpContextAccessor
+                    .HttpContext?
+                    .User
+                    .FindFirst(ClaimTypes.NameIdentifier)?
+                    .Value;
+
+                return Guid.TryParse(value, out var userId)
+                    ? userId
+                    : null;
+            }
+        }
+
+        public string? Email =>
+            _httpContextAccessor
+                .HttpContext?
+                .User
+                .FindFirst(ClaimTypes.Email)?
+                .Value;
 
         public bool IsAuthenticated =>
-            User?.Identity?.IsAuthenticated == true;
-
-        public Guid UserId =>
-            GetRequiredGuidClaim(ClaimTypes.NameIdentifier);
-
-        public Guid TenantId =>
-            GetRequiredGuidClaim("tenant_id");
-
-        public string? Role =>
-            User?.FindFirstValue(ClaimTypes.Role);
-
-        private Guid GetRequiredGuidClaim(string claimType)
-        {
-            var value = User?.FindFirstValue(claimType);
-
-            if (!Guid.TryParse(value, out var id))
-            {
-                throw new UnauthorizedAccessException(
-                    $"The authenticated user does not contain a valid '{claimType}' claim.");
-            }
-
-            return id;
-        }
+            _httpContextAccessor
+                .HttpContext?
+                .User
+                .Identity?
+                .IsAuthenticated == true;
     }
 }

@@ -12,6 +12,8 @@ using SubscriptionPlatformApp.Application.Abstractions.Services;
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.Helpers.AppSettings;
 using SubscriptionPlatformApp.Application.UseCases;
+using SubscriptionPlatformApp.Application.Utils.Constants;
+using SubscriptionPlatformApp.Domain.Enums;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 using SubscriptionPlatformApp.Infrastructure.Providers;
 using SubscriptionPlatformApp.Infrastructure.Repositories;
@@ -65,18 +67,25 @@ namespace SubscriptionPlatformApp.Infrastructure.Configurations
                     };
                 });
 
-            services.AddAuthorizationBuilder()
-                .AddPolicy("AdminOnly", policy =>
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthorizationPolicyConstants.AdminOnly, policy =>
+                {
                     policy.RequireAssertion(context =>
                     {
-                        var httpContext = context.Resource as HttpContext;
-                        var tenant = httpContext?
-                            .RequestServices
-                            .GetRequiredService<ITenantContextAccessor>()
-                            .Current;
+                        if (context.Resource is not HttpContext httpContext)
+                        {
+                            return false;
+                        }
 
-                        return tenant?.Role == "Admin";
-                    }));
+                        var tenantContextAccessor =
+                            httpContext.RequestServices
+                                .GetRequiredService<ITenantContextAccessor>();
+
+                        return tenantContextAccessor.Current?.Role == MembershipRole.Admin.ToString();
+                    });
+                });
+            });
 
             services
                 .AddAndValidate<SmtpSetting>(config)

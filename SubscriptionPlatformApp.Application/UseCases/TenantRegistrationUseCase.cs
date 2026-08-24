@@ -95,7 +95,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     MembershipId = Guid.NewGuid(),
                     TenantId = newTenantId,
                     UserId = newAdminId,
-                    Role = RoleConstants.ADMIN_ROLE,
+                    Role = MembershipRole.Admin.ToString(),
                     MemberStatus = MemberStatus.Pending,
                     JoinedAt = now,
                     CreatedAt = now,
