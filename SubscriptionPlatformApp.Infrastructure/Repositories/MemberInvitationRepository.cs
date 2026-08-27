@@ -2,6 +2,7 @@
 using SubscriptionPlatformApp.Application.Abstractions.Persistence;
 using SubscriptionPlatformApp.Application.Abstractions.Repositories;
 using SubscriptionPlatformApp.Domain.Entities;
+using SubscriptionPlatformApp.Domain.Enums;
 using SubscriptionPlatformApp.Infrastructure.Persistence;
 using SubscriptionPlatformApp.Infrastructure.Repositories.Shared;
 using System;
@@ -17,6 +18,13 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
         public Task<MemberInvitations?> FindByToken(string token, CancellationToken ct)
         {
             return _set.FirstOrDefaultAsync(x => x.HashedToken == token, ct);
+        }
+
+        public Task<List<MemberInvitations>> GetMemberInvitationsByTenantId(CancellationToken ct)
+        {
+            return _set
+                .Where(x => x.InvitationStatus != InvitationStatus.Accepted)
+                .ToListAsync(ct);
         }
     }
 }

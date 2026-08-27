@@ -2,11 +2,7 @@
 using SubscriptionPlatformApp.Application.Abstractions.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases;
 using SubscriptionPlatformApp.Application.DTOs.UseCases.GetMemberUseCase;
-using SubscriptionPlatformApp.Application.DTOs.UseCases.UserVerificationUseCase;
 using SubscriptionPlatformApp.Application.Utils.Response;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SubscriptionPlatformApp.Application.UseCases
 {
@@ -24,6 +20,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
             try
             {
                 var members = await _unitOfWork.Membership.GetMembershipByTenantId(ct);
+                var memberInvitations = await _unitOfWork.MemberInvitation.GetMemberInvitationsByTenantId(ct);
 
                 var data = members.Select(x => new MemberInfo
                 {
@@ -33,6 +30,15 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     MemberStatus = x.MemberStatus.ToString(),
                     JoinAt = x.JoinedAt.ToString()
                 }).ToList();
+
+                data.AddRange(memberInvitations.Select(x => new MemberInfo
+                {
+                    FullName = string.Empty,
+                    Email = x.InvitedEmail,
+                    Role = x.Role,
+                    MemberStatus = x.InvitationStatus.ToString(),
+                    JoinAt = null
+                }));
 
                 var res = new GetMemberResponse
                 {
