@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="EmailTemplates\EmailVerificationEmailTemplate.html" />
+	  <EmbeddedResource Include="EmailTemplates\MemberInvitationEmailTemplate.html" />
   </ItemGroup>
 
   <ItemGroup>

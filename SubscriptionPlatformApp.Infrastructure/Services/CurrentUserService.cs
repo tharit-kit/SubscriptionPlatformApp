@@ -21,7 +21,7 @@ namespace SubscriptionPlatformApp.Infrastructure.Services
                 var value = _httpContextAccessor
                     .HttpContext?
                     .User
-                    .FindFirst(ClaimTypes.NameIdentifier)?
+                    .FindFirst("userId")?
                     .Value;
 
                 return Guid.TryParse(value, out var userId)
