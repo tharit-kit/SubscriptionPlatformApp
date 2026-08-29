@@ -20,6 +20,16 @@ namespace SubscriptionPlatformApp.Infrastructure.Repositories
             return _set.FirstOrDefaultAsync(x => x.HashedToken == token, ct);
         }
 
+        public Task<bool> HasActiveInvitationAsync(Guid tenantId, string email, DateTime utcNow, CancellationToken ct)
+        {
+            return _set.AnyAsync(x =>
+                x.TenantId == tenantId &&
+                x.InvitedEmail == email &&
+                x.InvitationStatus == InvitationStatus.Invited &&
+                x.ExpiresAt > utcNow,
+                ct);
+        }
+
         public Task<List<MemberInvitations>> GetMemberInvitationsByTenantId(CancellationToken ct)
         {
             return _set

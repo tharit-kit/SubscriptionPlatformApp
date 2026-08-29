@@ -57,6 +57,7 @@ namespace SubscriptionPlatformApp.Application.UseCases
 
                 var adminUserId = _currentUserService.UserId!.Value;
                 var tenantId = tenantContext.TenantId;
+                var invitedEmail = request.Email.Trim();
 
                 var inviterMembership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(tenantId, adminUserId, ct);
                 if (inviterMembership == null)
@@ -64,7 +65,18 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.MembershipNotFound);
                 }
 
-                var invitee = await _unitOfWork.User.FindByEmail(request.Email, ct);
+                var inviter = await _unitOfWork.User.FindById(adminUserId, ct);
+                if (inviter == null)
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserNotFound);
+                }
+
+                if (string.Equals(inviter.Email, invitedEmail, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.CannotInviteSelf);
+                }
+
+                var invitee = await _unitOfWork.User.FindByEmail(invitedEmail, ct);
                 if (invitee != null)
                 {
                     var inviteeMembership = await _unitOfWork.Membership.FindByTenantIdAndUserIdAsync(tenantId, invitee.UserId, ct);
@@ -74,35 +86,40 @@ namespace SubscriptionPlatformApp.Application.UseCases
                     }
                 }
 
+                var now = DateTime.UtcNow;
+                var wasAlreadyInvited = await _unitOfWork.MemberInvitation.HasActiveInvitationAsync(
+                    tenantId,
+                    invitedEmail,
+                    now,
+                    ct);
+                if (wasAlreadyInvited)
+                {
+                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserAlreadyInvited);
+                }
+
                 var tenant = await _unitOfWork.Tenant.FindByIdAsync(tenantId, ct);
                 if (tenant == null)
                 {
                     return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.TenantNotFound);
                 }
 
-                var inviter = await _unitOfWork.User.FindById(adminUserId, ct);
-                if (inviter == null)
-                {
-                    return ApiResponse.Fail<MemberInvitationResponse>(ResponseCodes.UserNotFound);
-                }
-
                 var invitation = new MemberInvitations
                 {
                     MemberInvitationId = Guid.NewGuid(),
                     TenantId = tenantId,
-                    InvitedEmail = request.Email,
+                    InvitedEmail = invitedEmail,
                     Role = request.Role,
                     HashedToken = _secureTokenGenerator.Generate().Hash,
                     CreatedBy = adminUserId,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = now,
                     InvitationStatus = InvitationStatus.Invited,
-                    ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                    ExpiresAt = now.AddMinutes(15),
                 };
 
                 await _unitOfWork.MemberInvitation.AddAsync(invitation, ct);
                 await _unitOfWork.SaveChangesAsync(ct);
 
-                var isSendEmail = await _emailService.SendMemberInvitationEmailAsync(request.Email,
+                var isSendEmail = await _emailService.SendMemberInvitationEmailAsync(invitedEmail,
                                                                                      "New Member",
                                                                                      tenant.TenantName,
                                                                                      inviter.FullName,

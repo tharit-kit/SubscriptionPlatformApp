@@ -42,6 +42,12 @@ namespace SubscriptionPlatformApp.Application.Utils.Response
         public static readonly ResponseCode UserAlreadyInTenant =
             new("USER_ALREADY_IN_TENANT", "The user is already a member of this tenant");
 
+        public static readonly ResponseCode UserAlreadyInvited =
+            new("USER_ALREADY_INVITED", "The user has already been invited to this tenant");
+
+        public static readonly ResponseCode CannotInviteSelf =
+            new("CANNOT_INVITE_SELF", "You cannot invite yourself");
+
         public static readonly ResponseCode MemberInvitationNotFound =
             new("MEMBER_INVITATION_NOT_FOUND", "Member invitation not found");
 
